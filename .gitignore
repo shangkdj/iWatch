@@ -1,0 +1,22 @@
+# Go编译二进制
+watch-api
+*.exe
+
+# 环境变量密码文件
+.env
+*.pem
+*.key
+
+# IDE
+.vscode/**
+!.vscode/settings.json
+!.vscode/launch.json
+
+# go
+*.out
+go.work
+go.work.sum
+
+# 系统
+.DS_Store
+Thumbs.db
