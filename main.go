@@ -40,7 +40,7 @@ func main() {
 	// 6. 健康检查接口
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"status": "ok",
+			"status": "200",
 			"msg":    "服务运行正常",
 		})
 	})
