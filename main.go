@@ -9,8 +9,16 @@ import (
 	"watch-api/config"
 	"watch-api/db"
 	"watch-api/handlers"
+
+	"github.com/joho/godotenv"
 )
 
+func init() {
+	// 加载 .env 文件（如果存在）
+	if err := godotenv.Load(); err != nil {
+		log.Println("⚠️ 未找到 .env 文件，使用系统环境变量")
+	}
+}
 func main() {
 	// 1. 加载配置
 	cfg := config.LoadConfig()
