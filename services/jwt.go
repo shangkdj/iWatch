@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	err := godotenv.Load("../.env")
+	err := godotenv.Load()
 	if err != nil {
 		log.Println("⚠️ 加载 .env 失败:", err)
 	} else {

@@ -46,7 +46,7 @@ func main() {
 	r := gin.Default()
 
 	// 6. 健康检查接口
-	r.GET("/health", func(c *gin.Context) {
+	r.GET("/health1", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status": "200",
 			"msg":    "服务运行正常",
@@ -55,6 +55,17 @@ func main() {
 
 	// 7. 测试 GORM 的接口（通过闭包注入 db）
 	r.GET("/test-db", handlers.TestDB(database))
+	// ✅ 公开路由：登录（无需认证）
+	r.POST("/api/auth/test-login", handlers.TestLogin(database)) // 测试登录
+
+	// ✅ 受保护路由组（需要 JWT 认证）
+	// authorized := r.Group("/api/v1")
+	// authorized.Use(middleware.AuthMiddleware())
+	// {
+	//     authorized.POST("/health/batch/upload", handlers.BatchUpload(database))
+	//     authorized.GET("/complication/:user_id", handlers.GetComplication(database))
+	//     // 后续所有需要认证的接口都放在这里
+	// }
 
 	// 8. 启动服务器
 	log.Println("🚀 服务启动在 http://127.0.0.1:8080")
