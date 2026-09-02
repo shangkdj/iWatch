@@ -36,6 +36,8 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
+//JSON Web Token (JWT) 是一种用于在网络应用环境间传递声明的基于 JSON 的开放标准（RFC 7519）。
+
 // GenerateJWT 生成 JWT 令牌
 // 参数 userID: 用户ID
 // 返回: token字符串, error
