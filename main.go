@@ -9,6 +9,7 @@ import (
 	"watch-api/config"
 	"watch-api/db"
 	"watch-api/handlers"
+	"watch-api/middleware"
 
 	"github.com/joho/godotenv"
 )
@@ -57,15 +58,27 @@ func main() {
 	r.GET("/test-db", handlers.TestDB(database))
 	// ✅ 公开路由：登录（无需认证）
 	r.POST("/api/auth/test-login", handlers.TestLogin(database)) // 测试登录
-
 	// ✅ 受保护路由组（需要 JWT 认证）
-	// authorized := r.Group("/api/v1")
-	// authorized.Use(middleware.AuthMiddleware())
-	// {
-	//     authorized.POST("/health/batch/upload", handlers.BatchUpload(database))
-	//     authorized.GET("/complication/:user_id", handlers.GetComplication(database))
-	//     // 后续所有需要认证的接口都放在这里
-	// }
+	authorized := r.Group("/api/v1")
+	authorized.Use(middleware.AuthMiddleware())
+	{
+		// 临时测试路由，验证中间件是否生效
+		authorized.GET("/test-auth", func(c *gin.Context) {
+			userID, exists := c.Get("userID")
+			if !exists {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "未找到用户信息"})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{
+				"message": "认证成功！",
+				"user_id": userID,
+			})
+		})
+
+		// 后续接口（逐步放开注释）
+		// authorized.POST("/health/batch/upload", handlers.BatchUpload(database))
+		// authorized.GET("/complication/:user_id", handlers.GetComplication(database))
+	}
 
 	// 8. 启动服务器
 	log.Println("🚀 服务启动在 http://127.0.0.1:8080")

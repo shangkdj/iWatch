@@ -1,0 +1,34 @@
+### 1. 测试登录（获取 token）
+@baseUrl = https://www.shangkdj.com/
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJpc3MiOiJ3YXRjaC1hcGkiLCJzdWIiOiJ1c2VyLWF1dGgiLCJleHAiOjE3ODg2NTk2ODAsIm5iZiI6MTc4ODU3MzI4MCwiaWF0IjoxNzg4NTczMjgwfQ.UjeXN8BeRf7_T6_5HoQByw_OmT_GZXL_IsdF8Plpwz8
+
+### 登录
+POST {{baseUrl}}api/auth/test-login
+Content-Type: application/json
+
+{
+    "user_id": "test_user_001"
+}
+
+### 2. 测试受保护路由（需要 token）
+# 先把上面返回的 token 复制到下面
+GET {{baseUrl}}api/v1/test-auth
+Authorization: Bearer {{token}}
+
+### 3. 测试上传接口（需要 token）
+POST {{baseUrl}}api/v1/health/batch/upload
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "user_id": "test_user_001",
+    "samples": [
+        {
+            "sample_uuid": "test-001",
+            "type": "hrv",
+            "value": 45.2,
+            "start_date": "2026-09-05T08:00:00Z",
+            "end_date": "2026-09-05T08:00:00Z"
+        }
+    ]
+}
