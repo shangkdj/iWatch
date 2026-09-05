@@ -1,6 +1,6 @@
 ### 1. 测试登录（获取 token）
 @baseUrl = https://www.shangkdj.com/
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJpc3MiOiJ3YXRjaC1hcGkiLCJzdWIiOiJ1c2VyLWF1dGgiLCJleHAiOjE3ODg2NTk2ODAsIm5iZiI6MTc4ODU3MzI4MCwiaWF0IjoxNzg4NTczMjgwfQ.UjeXN8BeRf7_T6_5HoQByw_OmT_GZXL_IsdF8Plpwz8
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJpc3MiOiJ3YXRjaC1hcGkiLCJzdWIiOiJ1c2VyLWF1dGgiLCJleHAiOjE3ODg2ODE5NjMsIm5iZiI6MTc4ODU5NTU2MywiaWF0IjoxNzg4NTk1NTYzfQ.Qs2ZSkSdrP_lu1IeQAkIlDlHXFr9kS3TheU_lwPvA20
 
 ### 登录
 POST {{baseUrl}}api/auth/test-login
@@ -26,7 +26,46 @@ Content-Type: application/json
         {
             "sample_uuid": "test-001",
             "type": "hrv",
+            "value": 43.2,
+            "start_date": "2026-09-05T08:00:00Z",
+            "end_date": "2026-09-05T08:00:00Z"
+        }
+    ]
+}
+
+### 2. 上传健康数据（把上一步返回的 token 填到下面）
+POST {{baseUrl}}api/v1/health/batch/upload
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "user_id": "test_user_001",
+    "samples": [
+        {
+            "sample_uuid": "test-001",
+            "type": "hrv",
             "value": 45.2,
+            "start_date": "2026-09-05T08:00:00Z",
+            "end_date": "2026-09-05T08:00:00Z"
+        },
+        {
+            "sample_uuid": "test-002",
+            "type": "hrv",
+            "value": 52.1,
+            "start_date": "2026-09-05T09:00:00Z",
+            "end_date": "2026-09-05T09:00:00Z"
+        },
+        {
+            "sample_uuid": "test-003",
+            "type": "heart_rate",
+            "value": 72,
+            "start_date": "2026-09-05T08:00:00Z",
+            "end_date": "2026-09-05T08:00:00Z"
+        },
+        {
+            "sample_uuid": "test-004",
+            "type": "steps",
+            "value": 1234,
             "start_date": "2026-09-05T08:00:00Z",
             "end_date": "2026-09-05T08:00:00Z"
         }

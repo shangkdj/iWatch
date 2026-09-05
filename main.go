@@ -75,8 +75,9 @@ func main() {
 			})
 		})
 
-		// 后续接口（逐步放开注释）
-		// authorized.POST("/health/batch/upload", handlers.BatchUpload(database))
+		// 批量上传接口
+		authorized.POST("/health/batch/upload", handlers.BatchUpload(database))
+
 		// authorized.GET("/complication/:user_id", handlers.GetComplication(database))
 	}
 

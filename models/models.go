@@ -7,9 +7,9 @@ import (
 // User 用户表
 type User struct {
 	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID    string    `gorm:"uniqueIndex;type:varchar(64);not null" json:"user_id"` // 存苹果登录返回的 sub（唯一标识）
-	Email     *string   `gorm:"type:varchar(128)" json:"email"`                       // 苹果返回的邮箱（可能为空）
-	Name      *string   `gorm:"type:varchar(64)" json:"name"`                         // 苹果返回的姓名（可能为空）
+	UserID    string    `gorm:"uniqueIndex;type:varchar(64);not null" json:"user_id"` // ✅ 存苹果 sub，保持 string
+	Email     *string   `gorm:"type:varchar(128)" json:"email"`
+	Name      *string   `gorm:"type:varchar(64)" json:"name"`
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
@@ -22,12 +22,12 @@ func (User) TableName() string {
 type HealthSample struct {
 	ID         int64     `gorm:"primaryKey;autoIncrement" json:"id"`
 	SampleUUID string    `gorm:"uniqueIndex;type:varchar(64);not null" json:"sample_uuid"`
-	UserID     string    `gorm:"index:idx_user_date;type:varchar(64);not null" json:"user_id"`
-	DataType   string    `gorm:"type:varchar(20);not null" json:"data_type"` // hrv, heart_rate, steps
+	UserID     int64     `gorm:"index:idx_user_date;not null" json:"user_id"` // ✅ int64，关联 users.ID
+	DataType   string    `gorm:"type:varchar(20);not null" json:"data_type"`
 	Value      float64   `gorm:"type:double precision;not null" json:"value"`
 	StartDate  time.Time `gorm:"index:idx_user_date;type:timestamptz;not null" json:"start_date"`
 	EndDate    time.Time `gorm:"type:timestamptz;not null" json:"end_date"`
-	Source     string    `gorm:"type:varchar(20);default:watch" json:"source"`
+	Source     string    `gorm:"type:varchar(20);default:iphone" json:"source"`
 	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
 }
 
@@ -38,7 +38,7 @@ func (HealthSample) TableName() string {
 // DailyAgg 日聚合表（表盘专用）
 type DailyAgg struct {
 	ID           int64     `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID       string    `gorm:"uniqueIndex:idx_user_date;type:varchar(64);not null" json:"user_id"`
+	UserID       int64     `gorm:"uniqueIndex:idx_user_date;not null" json:"user_id"` // ✅ int64，关联 users.ID
 	Date         time.Time `gorm:"uniqueIndex:idx_user_date;type:date;not null" json:"date"`
 	AvgHrv       *float64  `gorm:"type:double precision" json:"avg_hrv"`
 	AvgHeartRate *float64  `gorm:"type:double precision" json:"avg_heart_rate"`
@@ -53,8 +53,8 @@ func (DailyAgg) TableName() string {
 // ApnsToken APNs 推送令牌表
 type ApnsToken struct {
 	ID         int64     `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID     string    `gorm:"type:varchar(64);not null;index" json:"user_id"`
-	DeviceType string    `gorm:"type:varchar(10);not null" json:"device_type"` // watch, iphone
+	UserID     int64     `gorm:"index;not null" json:"user_id"` // ✅ int64，关联 users.ID
+	DeviceType string    `gorm:"type:varchar(10);not null" json:"device_type"`
 	Token      string    `gorm:"uniqueIndex;type:varchar(128);not null" json:"token"`
 	IsActive   bool      `gorm:"default:true" json:"is_active"`
 	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
