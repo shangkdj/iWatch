@@ -78,7 +78,8 @@ func main() {
 		// 批量上传接口
 		authorized.POST("/health/batch/upload", handlers.BatchUpload(database))
 
-		// authorized.GET("/complication/:user_id", handlers.GetComplication(database))
+		// 首页数据接口
+		authorized.GET("/health/dashboard", handlers.GetDashboard(database))
 	}
 
 	// 8. 启动服务器

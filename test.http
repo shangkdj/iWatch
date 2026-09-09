@@ -1,7 +1,6 @@
 ### 1. 测试登录（获取 token）
 @baseUrl = https://www.shangkdj.com/
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJpc3MiOiJ3YXRjaC1hcGkiLCJzdWIiOiJ1c2VyLWF1dGgiLCJleHAiOjE3ODg2ODE5NjMsIm5iZiI6MTc4ODU5NTU2MywiaWF0IjoxNzg4NTk1NTYzfQ.Qs2ZSkSdrP_lu1IeQAkIlDlHXFr9kS3TheU_lwPvA20
-
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJpc3MiOiJ3YXRjaC1hcGkiLCJzdWIiOiJ1c2VyLWF1dGgiLCJleHAiOjE3ODg5NTQ0OTMsIm5iZiI6MTc4ODg2ODA5MywiaWF0IjoxNzg4ODY4MDkzfQ.iR1N5aW7tybuoDx7zBYmQ-ajw6geIjgLVyMrR5etnJs
 ### 登录
 POST {{baseUrl}}api/auth/test-login
 Content-Type: application/json
@@ -33,41 +32,81 @@ Content-Type: application/json
     ]
 }
 
-### 2. 上传健康数据（把上一步返回的 token 填到下面）
-POST {{baseUrl}}api/v1/health/batch/upload
-Authorization: Bearer {{token}}
+### 2. 批量上传假数据（把上一步返回的 token 填到下面）
+### 包含今日和昨日数据，用于测试趋势
+POST {{baseUrl}}/api/v1/health/batch/upload
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 Content-Type: application/json
 
 {
     "user_id": "test_user_001",
     "samples": [
         {
-            "sample_uuid": "test-001",
+            "sample_uuid": "fake-001",
             "type": "hrv",
             "value": 45.2,
-            "start_date": "2026-09-05T08:00:00Z",
-            "end_date": "2026-09-05T08:00:00Z"
+            "start_date": "2026-09-09T08:00:00Z",
+            "end_date": "2026-09-09T08:00:00Z"
         },
         {
-            "sample_uuid": "test-002",
+            "sample_uuid": "fake-002",
             "type": "hrv",
             "value": 52.1,
-            "start_date": "2026-09-05T09:00:00Z",
-            "end_date": "2026-09-05T09:00:00Z"
+            "start_date": "2026-09-09T09:00:00Z",
+            "end_date": "2026-09-09T09:00:00Z"
         },
         {
-            "sample_uuid": "test-003",
+            "sample_uuid": "fake-003",
             "type": "heart_rate",
             "value": 72,
-            "start_date": "2026-09-05T08:00:00Z",
-            "end_date": "2026-09-05T08:00:00Z"
+            "start_date": "2026-09-09T08:00:00Z",
+            "end_date": "2026-09-09T08:00:00Z"
         },
         {
-            "sample_uuid": "test-004",
+            "sample_uuid": "fake-004",
+            "type": "heart_rate",
+            "value": 78,
+            "start_date": "2026-09-09T09:00:00Z",
+            "end_date": "2026-09-09T09:00:00Z"
+        },
+        {
+            "sample_uuid": "fake-005",
             "type": "steps",
             "value": 1234,
-            "start_date": "2026-09-05T08:00:00Z",
-            "end_date": "2026-09-05T08:00:00Z"
+            "start_date": "2026-09-09T08:00:00Z",
+            "end_date": "2026-09-09T08:00:00Z"
+        },
+        {
+            "sample_uuid": "fake-006",
+            "type": "steps",
+            "value": 567,
+            "start_date": "2026-09-09T09:00:00Z",
+            "end_date": "2026-09-09T09:00:00Z"
+        },
+        {
+            "sample_uuid": "fake-007",
+            "type": "hrv",
+            "value": 38.5,
+            "start_date": "2026-09-08T08:00:00Z",
+            "end_date": "2026-09-08T08:00:00Z"
+        },
+        {
+            "sample_uuid": "fake-008",
+            "type": "heart_rate",
+            "value": 82,
+            "start_date": "2026-09-08T08:00:00Z",
+            "end_date": "2026-09-08T08:00:00Z"
+        },
+        {
+            "sample_uuid": "fake-009",
+            "type": "steps",
+            "value": 800,
+            "start_date": "2026-09-08T08:00:00Z",
+            "end_date": "2026-09-08T08:00:00Z"
         }
     ]
 }
+
+### 3. 获取首页数据（验证聚合结果）
+GET {{baseUrl}}/api/v1/health/dashboard
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
