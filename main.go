@@ -76,8 +76,7 @@ func main() {
 		})
 
 		// 批量上传接口
-		authorized.POST("/health/batch/upload", handlers.BatchUpload(database))
-
+		authorized.POST("/health/batch/upload", handlers.BatchUpload(database, rdb))
 		// 首页数据接口
 		authorized.GET("/health/dashboard", handlers.GetDashboard(database))
 	}

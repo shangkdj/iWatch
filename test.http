@@ -1,7 +1,6 @@
 ### 1. 测试登录（获取 token）
-@baseUrl = https://www.shangkdj.com/
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJpc3MiOiJ3YXRjaC1hcGkiLCJzdWIiOiJ1c2VyLWF1dGgiLCJleHAiOjE3ODg5NTQ0OTMsIm5iZiI6MTc4ODg2ODA5MywiaWF0IjoxNzg4ODY4MDkzfQ.iR1N5aW7tybuoDx7zBYmQ-ajw6geIjgLVyMrR5etnJs
-### 登录
+@baseUrl = https://www.shangkdj.com
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJpc3MiOiJ3YXRjaC1hcGkiLCJzdWIiOiJ1c2VyLWF1dGgiLCJleHAiOjE3ODkwNDU4MTcsIm5iZiI6MTc4ODk1OTQxNywiaWF0IjoxNzg4OTU5NDE3fQ.Sx-M62L49inYiOfnHPouzPao8GdV-r9MV4D7EyvGNmQ
 POST {{baseUrl}}api/auth/test-login
 Content-Type: application/json
 
@@ -11,11 +10,11 @@ Content-Type: application/json
 
 ### 2. 测试受保护路由（需要 token）
 # 先把上面返回的 token 复制到下面
-GET {{baseUrl}}api/v1/test-auth
+GET {{baseUrl}}/api/v1/test-auth
 Authorization: Bearer {{token}}
 
 ### 3. 测试上传接口（需要 token）
-POST {{baseUrl}}api/v1/health/batch/upload
+POST {{baseUrl}}/api/v1/health/batch/upload
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -35,8 +34,7 @@ Content-Type: application/json
 ### 2. 批量上传假数据（把上一步返回的 token 填到下面）
 ### 包含今日和昨日数据，用于测试趋势
 POST {{baseUrl}}/api/v1/health/batch/upload
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
     "user_id": "test_user_001",
@@ -109,4 +107,4 @@ Content-Type: application/json
 
 ### 3. 获取首页数据（验证聚合结果）
 GET {{baseUrl}}/api/v1/health/dashboard
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Authorization: Bearer {{token}}

@@ -6,6 +6,10 @@ import (
 
 	"watch-api/models"
 
+	"github.com/redis/go-redis/v9"
+
+	"watch-api/services"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -27,7 +31,7 @@ type UploadRequest struct {
 }
 
 // BatchUpload 批量上传健康数据
-func BatchUpload(db *gorm.DB) gin.HandlerFunc {
+func BatchUpload(db *gorm.DB, rdb *redis.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req UploadRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -67,6 +71,9 @@ func BatchUpload(db *gorm.DB) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "插入失败"})
 			return
 		}
+
+		// 异步触发日聚合
+		go services.UpdateDailyAggregation(db, rdb, samples)
 
 		c.JSON(http.StatusOK, gin.H{
 			"status":  "success",
