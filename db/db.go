@@ -42,7 +42,14 @@ func InitDB(cfg config.Config) *gorm.DB {
 	); err != nil {
 		log.Fatalf("❌ 自动迁移失败: %v", err)
 	}
-
+	// 先删除（忽略错误）
+	db.Exec("DROP INDEX IF EXISTS idx_user_date;")
+	// 再创建
+	if err := db.Exec("CREATE UNIQUE INDEX idx_user_date ON daily_agg (user_id, date);").Error; err != nil {
+		log.Printf("⚠️ 创建唯一索引失败: %v", err)
+	} else {
+		log.Println("✅ 唯一索引 idx_user_date 已创建")
+	}
 	log.Println("✅ PostgreSQL 连接成功，表已就绪")
 	return db
 }

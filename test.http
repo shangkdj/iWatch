@@ -91,7 +91,7 @@ Authorization: Bearer {{token}}
         {
             "sample_uuid": "fake-008",
             "type": "heart_rate",
-            "value": 82,
+            "value": 83,
             "start_date": "2026-09-08T08:00:00Z",
             "end_date": "2026-09-08T08:00:00Z"
         },
@@ -106,5 +106,7 @@ Authorization: Bearer {{token}}
 }
 
 ### 3. 获取首页数据（验证聚合结果）
+## ALTER TABLE daily_agg ADD CONSTRAINT unique_user_date UNIQUE (user_id, date);
+## 需要手动添加了唯一约束
 GET {{baseUrl}}/api/v1/health/dashboard
 Authorization: Bearer {{token}}

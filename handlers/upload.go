@@ -10,6 +10,8 @@ import (
 
 	"watch-api/services"
 
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -72,8 +74,9 @@ func BatchUpload(db *gorm.DB, rdb *redis.Client) gin.HandlerFunc {
 			return
 		}
 
-		// 异步触发日聚合
-		go services.UpdateDailyAggregation(db, rdb, samples)
+		log.Println("开始聚合...")
+		services.UpdateDailyAggregation(db, rdb, samples) // 同步调用
+		log.Println("聚合已异步启动")
 
 		c.JSON(http.StatusOK, gin.H{
 			"status":  "success",

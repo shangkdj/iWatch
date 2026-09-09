@@ -35,15 +35,14 @@ func (HealthSample) TableName() string {
 	return "health_samples"
 }
 
-// DailyAgg 日聚合表（表盘专用）
 type DailyAgg struct {
-	ID           int64     `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID       int64     `gorm:"uniqueIndex:idx_user_date;not null" json:"user_id"` // ✅ int64，关联 users.ID
-	Date         time.Time `gorm:"uniqueIndex:idx_user_date;type:date;not null" json:"date"`
-	AvgHrv       *float64  `gorm:"type:double precision" json:"avg_hrv"`
-	AvgHeartRate *float64  `gorm:"type:double precision" json:"avg_heart_rate"`
-	TotalSteps   int64     `gorm:"default:0" json:"total_steps"`
-	UpdatedAt    time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+	ID           int64     `gorm:"primaryKey;autoIncrement"`
+	UserID       int64     `gorm:"index:idx_user_date,unique;not null"` // 用 index + unique
+	Date         time.Time `gorm:"index:idx_user_date,unique;type:date;not null"`
+	AvgHrv       *float64  `gorm:"type:double precision"`
+	AvgHeartRate *float64  `gorm:"type:double precision"`
+	TotalSteps   int64     `gorm:"default:0"`
+	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
 }
 
 func (DailyAgg) TableName() string {
