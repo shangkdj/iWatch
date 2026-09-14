@@ -19,19 +19,30 @@ type Config struct {
 	RedisAddr     string
 	RedisPassword string
 	RedisDB       int
+	// APNs 配置
+	APNSKeyPath    string
+	APNSKeyID      string
+	APNSTeamID     string
+	APNSBundleID   string
+	APNSProduction bool
 }
 
 func LoadConfig() Config {
 	cfg := Config{
-		DBHost:        os.Getenv("DB_HOST"),
-		DBPort:        os.Getenv("DB_PORT"),
-		DBUser:        os.Getenv("DB_USER"),
-		DBPassword:    os.Getenv("DB_PASSWORD"),
-		DBName:        os.Getenv("DB_NAME"),
-		SSLMode:       os.Getenv("SSL_MODE"),
-		RedisAddr:     os.Getenv("REDIS_ADDR"),
-		RedisPassword: os.Getenv("REDIS_PASSWORD"),
-		RedisDB:       getEnvInt("REDIS_DB", 0),
+		DBHost:         os.Getenv("DB_HOST"),
+		DBPort:         os.Getenv("DB_PORT"),
+		DBUser:         os.Getenv("DB_USER"),
+		DBPassword:     os.Getenv("DB_PASSWORD"),
+		DBName:         os.Getenv("DB_NAME"),
+		SSLMode:        os.Getenv("SSL_MODE"),
+		RedisAddr:      os.Getenv("REDIS_ADDR"),
+		RedisPassword:  os.Getenv("REDIS_PASSWORD"),
+		RedisDB:        getEnvInt("REDIS_DB", 0),
+		APNSKeyPath:    os.Getenv("APNS_KEY_PATH"),
+		APNSKeyID:      os.Getenv("APNS_KEY_ID"),
+		APNSTeamID:     os.Getenv("APNS_TEAM_ID"),
+		APNSBundleID:   os.Getenv("APNS_BUNDLE_ID"),
+		APNSProduction: os.Getenv("APNS_PRODUCTION") == "true",
 	}
 
 	// 检查必须的配置项（非敏感）

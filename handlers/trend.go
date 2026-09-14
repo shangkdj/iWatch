@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -17,6 +18,24 @@ type TrendResponse struct {
 	AvgHrv     *float64 `json:"avg_hrv"`
 	AvgHeart   *float64 `json:"avg_heart_rate"`
 	TotalSteps int64    `json:"total_steps"`
+}
+
+// TrendSummary 时段统计摘要
+type TrendSummary struct {
+	// 平均值
+	AvgHrv   *float64 `json:"avg_hrv"`
+	AvgHeart *float64 `json:"avg_heart_rate"`
+	AvgSteps float64  `json:"avg_steps"`
+	// 极值
+	MaxHrv   *float64 `json:"max_hrv"`
+	MinHrv   *float64 `json:"min_hrv"`
+	MaxHeart *float64 `json:"max_heart_rate"`
+	MinHeart *float64 `json:"min_heart_rate"`
+	MaxSteps int64    `json:"max_steps"`
+	MinSteps int64    `json:"min_steps"`
+	// 总计
+	TotalSteps int64 `json:"total_steps"`
+	TotalDays  int   `json:"total_days"`
 }
 
 // GetHealthTrend 获取历史趋势数据
@@ -39,6 +58,7 @@ func GetHealthTrend(db *gorm.DB) gin.HandlerFunc {
 		// 2. 解析 days 参数（默认 7 天，最大 90 天）
 		days := 7
 		if d := c.Query("days"); d != "" {
+			//atoi 把字符串转换为整数，如果转换失败会返回错误
 			if parsed, err := strconv.Atoi(d); err == nil && parsed > 0 {
 				days = parsed
 				if days > 90 {
@@ -81,4 +101,89 @@ func GetHealthTrend(db *gorm.DB) gin.HandlerFunc {
 			"data":       data,
 		})
 	}
+}
+
+// calculateSummary 计算时段统计摘要
+func calculateSummary(aggs []models.DailyAgg) TrendSummary {
+	summary := TrendSummary{}
+
+	if len(aggs) == 0 {
+		return summary
+	}
+
+	var hrvValues []float64
+	var heartValues []float64
+	var totalSteps int64
+	var maxHrv, minHrv, maxHeart, minHeart *float64
+	var maxSteps, minSteps int64
+
+	for i, agg := range aggs {
+		// HRV
+		if agg.AvgHrv != nil {
+			hrvValues = append(hrvValues, *agg.AvgHrv)
+			if maxHrv == nil || *agg.AvgHrv > *maxHrv {
+				maxHrv = agg.AvgHrv
+			}
+			if minHrv == nil || *agg.AvgHrv < *minHrv {
+				minHrv = agg.AvgHrv
+			}
+		}
+
+		// 心率
+		if agg.AvgHeartRate != nil {
+			heartValues = append(heartValues, *agg.AvgHeartRate)
+			if maxHeart == nil || *agg.AvgHeartRate > *maxHeart {
+				maxHeart = agg.AvgHeartRate
+			}
+			if minHeart == nil || *agg.AvgHeartRate < *minHeart {
+				minHeart = agg.AvgHeartRate
+			}
+		}
+
+		// 步数
+		totalSteps += agg.TotalSteps
+		if i == 0 || agg.TotalSteps > maxSteps {
+			maxSteps = agg.TotalSteps
+		}
+		if i == 0 || agg.TotalSteps < minSteps {
+			minSteps = agg.TotalSteps
+		}
+	}
+
+	// 平均值
+	if len(hrvValues) > 0 {
+		avg := average(hrvValues)
+		summary.AvgHrv = &avg
+	}
+	if len(heartValues) > 0 {
+		avg := average(heartValues)
+		summary.AvgHeart = &avg
+	}
+	summary.AvgSteps = math.Round(float64(totalSteps)/float64(len(aggs))*100) / 100
+
+	// 极值
+	summary.MaxHrv = maxHrv
+	summary.MinHrv = minHrv
+	summary.MaxHeart = maxHeart
+	summary.MinHeart = minHeart
+	summary.MaxSteps = maxSteps
+	summary.MinSteps = minSteps
+
+	// 总计
+	summary.TotalSteps = totalSteps
+	summary.TotalDays = len(aggs)
+
+	return summary
+}
+
+// average 计算平均值
+func average(values []float64) float64 {
+	if len(values) == 0 {
+		return 0
+	}
+	var sum float64
+	for _, v := range values {
+		sum += v
+	}
+	return math.Round(sum/float64(len(values))*100) / 100
 }
