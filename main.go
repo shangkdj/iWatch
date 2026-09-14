@@ -79,6 +79,8 @@ func main() {
 		authorized.POST("/health/batch/upload", handlers.BatchUpload(database, rdb))
 		// 首页数据接口
 		authorized.GET("/health/dashboard", handlers.GetDashboard(database))
+		authorized.GET("/health/trend", handlers.GetHealthTrend(database))
+
 	}
 
 	// 8. 启动服务器

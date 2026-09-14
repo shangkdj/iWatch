@@ -1,7 +1,7 @@
 ### 1. 测试登录（获取 token）
 @baseUrl = https://www.shangkdj.com
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJpc3MiOiJ3YXRjaC1hcGkiLCJzdWIiOiJ1c2VyLWF1dGgiLCJleHAiOjE3ODkwNDU4MTcsIm5iZiI6MTc4ODk1OTQxNywiaWF0IjoxNzg4OTU5NDE3fQ.Sx-M62L49inYiOfnHPouzPao8GdV-r9MV4D7EyvGNmQ
-POST {{baseUrl}}api/auth/test-login
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJpc3MiOiJ3YXRjaC1hcGkiLCJzdWIiOiJ1c2VyLWF1dGgiLCJleHAiOjE3ODk0NjIzNzMsIm5iZiI6MTc4OTM3NTk3MywiaWF0IjoxNzg5Mzc1OTczfQ.a8D_MMJR5K0CS3xMWed8t0j0rPsBe4xvBcODu1abyMU
+POST {{baseUrl}}/api/auth/test-login
 Content-Type: application/json
 
 {
@@ -109,4 +109,25 @@ Authorization: Bearer {{token}}
 ## ALTER TABLE daily_agg ADD CONSTRAINT unique_user_date UNIQUE (user_id, date);
 ## 需要手动添加了唯一约束
 GET {{baseUrl}}/api/v1/health/dashboard
+Authorization: Bearer {{token}}
+
+
+### 1. 登录
+POST {{baseUrl}}/api/auth/test-login
+Content-Type: application/json
+
+{
+    "user_id": "test_user_001"
+}
+
+### 2. 查询 7 天趋势
+GET {{baseUrl}}/api/v1/health/trend?days=7
+Authorization: Bearer {{token}}
+
+### 3. 查询 30 天趋势
+GET {{baseUrl}}/api/v1/health/trend?days=30
+Authorization: Bearer {{token}}
+
+### 4. 不传 days（默认 7 天）
+GET {{baseUrl}}/api/v1/health/trend
 Authorization: Bearer {{token}}
