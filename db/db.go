@@ -39,6 +39,8 @@ func InitDB(cfg config.Config) *gorm.DB {
 		&models.HealthSample{},
 		&models.DailyAgg{},
 		&models.ApnsToken{},
+		&models.UserSettings{}, // ✅ 新增用户接口
+
 	); err != nil {
 		log.Fatalf("❌ 自动迁移失败: %v", err)
 	}

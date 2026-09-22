@@ -1,4 +1,5 @@
 // services/trend.go
+// 计算趋势的服务函数
 package services
 
 import "math"

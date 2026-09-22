@@ -82,6 +82,9 @@ func main() {
 		// 首页数据接口
 		authorized.GET("/health/dashboard", handlers.GetDashboard(database))
 		authorized.GET("/health/trend", handlers.GetHealthTrend(database))
+		// ✅ 新增：用户设置
+		authorized.GET("/user/settings", handlers.GetUserSettings(database))
+		authorized.PUT("/user/settings", handlers.UpdateUserSettings(database))
 
 	}
 
