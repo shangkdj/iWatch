@@ -57,7 +57,9 @@ func main() {
 	// 7. 测试 GORM 的接口（通过闭包注入 db）
 	r.GET("/test-db", handlers.TestDB(database))
 	// ✅ 公开路由：登录（无需认证）
-	r.POST("/api/auth/test-login", handlers.TestLogin(database)) // 测试登录
+	r.POST("/api/auth/test-login", handlers.TestLogin(database))                          // 测试登录
+	r.POST("/api/auth/apple-login", handlers.AppleLogin(database, "com.shangkdj.iwatch")) // 苹果登录
+
 	// ✅ 受保护路由组（需要 JWT 认证）
 	authorized := r.Group("/api/v1")
 	authorized.Use(middleware.AuthMiddleware())
